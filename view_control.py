@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 """Calculator view and controller.
 
 This module contains the view and controller in an MVC-architecture calculator.
@@ -27,23 +25,16 @@ class StatusBar(tkinter.Frame):
         self.label.update_idletasks()
         
 class View:
-    def __init__(self, root=None, controller=None):
+    def __init__(self, configuration, root=None, controller=None):
+        self.configuration = configuration
         self.model = model.Calculator()
         self.root = root or tkinter.Tk()
         self.controller = controller or Controller(self, self.model)
         self.current = tkinter.StringVar()
         self.initialize()
         
-    CONFIGURATION = """
-        sqrt|x^y| pi|*|AC
-         7  | 8 | 9 |/|C
-         4  | 5 | 6 |+|Bksp
-         1  | 2 | 3 |-|(
-         .  | 0 |+/-|=|)
-    """
-
     def initialize(self):
-        """Initialize the view according to CONFIGURATION."""
+        """Initialize the view according to the configuration."""
         self.root.wm_title("Calculator")
         outer = tkinter.Frame(self.root)
         outer.bind("<Key>", self.controller.key)
@@ -73,7 +64,7 @@ class View:
         self.current_label.pack(expand=True, side=tkinter.TOP, fill=tkinter.X)
 
         buttons = tkinter.Frame(outer)
-        for row in self.CONFIGURATION.splitlines():
+        for row in self.configuration.splitlines():
             if not row.strip():
                 continue
             row_frame = tkinter.Frame(buttons)
@@ -225,7 +216,3 @@ class Controller:
         if function is not None:
             print("key", key) or function(self)
         self.view.update_idletasks()
-    
-if __name__ == "__main__":
-    v = View()
-    v.mainloop()
